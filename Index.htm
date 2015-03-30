@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Seeker</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="css/toastr.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpvdvAxAYCePQxww6C6qeGbNIVc9OOX3Y"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/store.min.js"></script>
+        <script type="text/javascript" src="js/toastr.js"></script>
+    </head>
+    
+    <body>
+        <div class="header-placeholder"></div>
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+              <div class="container">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                
+
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                  <a href="index.htm" id="app-name" style="text-decoration:none" onclick="closeModal()"> <b>Seeker</b> </a>
+                  <span id="app-line" style="color:white"> - Find events that you love and meet new people </span>
+                
+                  <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" id="aboutLink" style="color:white">About</a></li>
+                    <li><a href="#" id="searchLink" style="color:white">Search</a></li>
+                    <li><a href="#" id="profileLink" style="color:white">Profile</a></li>
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="color:white">Messages<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu" id="messagesDropdown">
+                    </ul>
+                </li>
+              </ul>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+        <div id="map-canvas"></div>
+        
+        <div id="infoWindow" style="display:none; overflow:auto">
+            <ul>
+            </ul>
+        </div>
+
+        
+        <div id="modalWindow"></div>
+        
+        <!-- @elisha; event and profile modal divs -->
+        <div id="eventModal" class="modalPopup" style="display:none">
+            <h1><b><a href="#" id="eventTitle" target="_blank"></a></b></h1><br>
+            <div id = "eventInfo" align = "left" style = "width: 70%; float:left"></div>
+            <div id = "attendees" style = "width: 30%; float:right"></div>
+            <h1 id="eventTitle"></h1><br>
+            <div id="eventMessageStatus" style="display:none">
+                    <div class="form-group" style = "width: 30%; float:right; display: inline;">
+                        <select class="form-control input-sm" id="messButt" style="float:left; width:120px">
+                            <option value="0">Message</option>
+                            <option value="1">Do not Message</option>
+                        </select>
+                        <button type="message" onclick="updateMessage()" class="btn btn-xs btn-primary pull-right" style="margin-top:4px">Update</button>
+                    </div>
+            </div>
+            <br><br>
+            <a href="#" id="attendingButton" class="btn btn-success">Mark as attending</a>
+            <img src="img/back.png" id="backToProfileIcon" onclick="showModal('profile', true)"/>
+            <img src="img/close.png" id="closeIcon" onclick="closeModal()"/>
+            </div>
+        
+        <div id="profileModal" class="modalPopup" style="display:none">
+            <div id = "container1">
+                <div id = "userPic" align = "left" style = "width: 50%; height:200px; float:left"></div>
+                <div id = "userInfo" style = "width: 50%; height:200px; float:right" align= "left"></div>
+            </div>
+        </br>
+            <div id = "eventsAttending">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Events</div>
+                    <table class="table table-bordered">
+                        <div id = "eventTable"></div>
+                    </table>
+                </div>
+            </div>
+            <img id="backIcon" src="img/back.png" id="backIcon" onclick="showModal('event', true)"/>
+            <img src="img/close.png" id="closeIcon" onclick="closeModal()"/>
+        </div>
+        
+        <div id="messageModal" class="modalPopup" style="display:none">
+            <h1 id="messageTitle"></h1><br>
+            <input id="messageSubject" type="text" placeholder="Subject" class="searchField"></input>
+            <br>
+            <textarea id="messageBody" style="height:100px;" class="searchField" placeholder="Message"></textarea>
+            <br>
+            <a href="#" id="sendMessageButton" class="btn btn-success" onclick="sendMessage();">Send Message</a>
+            <img id="backIcon" src="img/back.png" id="backIcon" onclick="showModal('event', true)"/>
+            <img src="img/close.png" id="closeIcon" onclick="showModal('event')"/>
+        </div>
+    
+        <div id="receivedMessageModal" class="modalPopup" style="display:none">
+            <h1 id="receivedMessageTitle"></h1><br>
+            <div id="receivedMessageBody"></div>
+            <hr id="hrTag" style="display:none"><br>
+            <a href="#" id="replyButton" class="btn btn-success" onclick="replyToMessage();">Reply</a>
+            <div id="responseDiv" style="display:none">
+                <textarea id="responseMssageBody" style="height:100px;" class="responseField" placeholder="Message"></textarea>
+                <br>
+                <a href="#" id="sendResponse" class="btn btn-success" onclick="sendResponse();">Send Message</a>
+            </div>
+            <img src="img/close.png" id="closeIcon" onclick="closeModal()"/>
+        </div>
+
+        <!-- @Mahd -->
+
+        <div id="aboutModal" class="modalPopup" style="display:none">
+            <h1 id="aboutTitle">Welcome to Seeker! </h1>
+            <div id = "container1">
+                <div id = "aboutPic" align = "center" style = "width: 100%; height:200px; float:center"></div>
+            </div>
+            <br>
+            <p id="aboutText" align = "left">
+                Seeker is an application that allows New Yorkers to meet other New Yorkers at exciting New York events! <br><br>
+                New York is known to be a very happening city and we New Yorkers never like to sit at home doing nothing. We often ride out with our friends to the countless events happening everywhere. But we have all experienced those times when we want to go to a specific event but can’t find out somebody to go with. Your friends might be busy, or they just might not be interested in a new interest that you have picked up and want to explore. <br><br>
+                Don’t worry; we have got you covered! <br><br>
+                Simply search for events that you might be interested in and find out who else is planning a visit. Look at their profiles and send them a message. Don’t be shy – this is a great opportunity for you to connect with wonderful people who share your interests. </p>
+
+            <img src="img/close.png" id="closeIcon" onclick="closeModal()"/>
+        </div>
+
+        <div id="searchModal" class="modalPopup">
+            <center>
+                <h1>Search</h1>
+                    <input type="text" class="searchField" id="stringSearch" placeholder="search" onfocus="(this.placeholder='')" onblur="blurFunc(this);"><br>
+                    <input class="searchField" placeholder="by earliest event date" id="minDateSearch" type="text" onfocus="focusFunc(this)" onblur="blurFunc(this);"><br>
+                    <input class="searchField" placeholder="by latest event date" id="maxDateSearch" type="text" onfocus="focusFunc(this)" onblur="blurFunc(this);"><br>
+                    <div id="advancedSearchFields" style="display:none" >
+                        <select id="neighborhoodSearch" class="searchField dropdownSearch" onchange="selectChange(this)">
+                            <option value="" selected>by neighborhood</option>
+                            <option value="Morningside+Heights">Morningside Heights</option>
+                            <option value="Upper+West+Side">Upper West Side</option>
+                            <option value="Upper+East+Side">Upper East Side</option>
+                            <option value="Greenwich+Village">Greenwich Village</option>
+                            <option value="Clinton">Hell's Kitchen</option>
+                            <option value="Midtown+East">Midtown East</option>
+                            <option value="Midtown+West">Midtown West</option>
+                            <option value="Chelsea">Chelsea</option>
+                            <option value="East+Village">East Village</option>
+                            <option value="West+Village">West Village</option>
+                            <option value="Lower+East+Side">Lower East Side</option>
+                            <option value="Little+Italy">Little Italy</option>
+
+                        </select>
+                        <br>
+                        <select id="eventTypeSearch" class="searchField dropdownSearch" onchange="selectChange(this)">
+                            <option value="" selected>by event type</option>
+                            <option value="Theater">Theater</option>
+                            <option value="Dance">Dance</option>
+                            <option value="Movies">Movies</option>
+                            <option value="forChildren">Children</option>
+                            <option value="Art">Art</option>
+                            
+                        </select>
+                        <br>
+                        <input id="freeSearch" type="checkbox"/><span class="checkboxSearch">Free</span>
+                        <br>
+                        <input id="kidSearch" type="checkbox"/><span class="checkboxSearch">Kid Friendly</span>
+                        <br>  
+                    </div>
+                    <div id="toggleAdvancedSearch">
+                        <center>
+                            <svg height="12px" width="24px">
+                                <path id="arrow" d="M 0 0 L 12 12 L 24 0" />
+                            </svg>
+                        </center>
+                    </div>
+                <a href="#" id="searchButton" class="btn btn-lg btn-success"><span class="glyphicon glyphicon-search"></span> Find Events</a>
+                <br>
+                <img src="img/close.png" id="closeIcon" onclick="closeModal()"/>
+            </center>
+        </div>
+    </body>
+</html>
